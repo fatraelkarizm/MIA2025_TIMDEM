@@ -1,45 +1,10 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { NAV_ITEMS } from "@/types/layout";
+import Navbar from "@/components/Navbar";
 
 const Landing = () => {
-  const [activeKey, setActiveKey] = useState("/");
-
   return (
     <div className="min-h-screen bg-brand-cream">
       <header className="bg-secondary h-[90px] flex items-center">
-        <nav className="w-full max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-white text-2xl lg:text-[32px] font-bold">
-            Direktori UMKM
-          </h1>
-
-          <div className="hidden lg:flex items-center gap-6 xl:gap-10">
-            {NAV_ITEMS.map((item) => {
-              const isActive = activeKey === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  onClick={() => setActiveKey(item.href)}
-                  className={`text-lg lg:text-xl font-bold transition-colors ${
-                    isActive
-                      ? "text-primary underline"
-                      : "text-white hover:text-primary"
-                  }`}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button className="bg-primary text-white px-5 lg:px-7 py-2 lg:py-[13px] rounded-full text-sm lg:text-base font-semibold hover:bg-[#e55f2f] transition-colors">
-              Lihat Semua
-            </button>
-          </div>
-        </nav>
+        <Navbar />
       </header>
 
       <section className="relative w-full max-w-7xl mx-auto pt-12 lg:pt-24 pb-16 lg:pb-32 overflow-visible">

@@ -12,8 +12,8 @@ export const NAV_ITEMS: NavItem[] = [
           icon: "home",
      },
      {
-          label: "About",
-          href: "/about",
+          label: "Explore",
+          href: "/explore",
           icon: "info-circle",
      },
      {

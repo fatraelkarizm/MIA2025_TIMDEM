@@ -35,6 +35,13 @@
   text-decoration: underline;
 }
 @layer components {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
   .bg-linear-to-b {
     background-image: linear-gradient(
       180deg,

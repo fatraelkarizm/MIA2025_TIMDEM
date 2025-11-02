@@ -1,5 +1,6 @@
 import {
-     Landing
+     Landing,
+     Explore
 } from "@/pages/index";
 
 const routes = [
@@ -7,6 +8,11 @@ const routes = [
           path: "/",
           name: "Landing",
           element: Landing
+     },
+     {
+          path: "/explore",
+          name: "Explore",
+          element: Explore
      }
 ];
 
