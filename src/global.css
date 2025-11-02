@@ -1,0 +1,82 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto:wght@400;500&display=swap");
+@import "tailwindcss";
+
+/* Color System */
+
+/* Background Color Primary */
+/* Fungsi: Digunakan di Button dan Text */
+.bg-primary {
+  background-color: #ff6b35;
+}
+.text-primary {
+  color: #ff6b35;
+}
+
+/* Background Color Secondary */
+/* Fungsi: Digunakan di Navbar dan Text */
+.bg-secondary {
+  background-color: #273b43;
+}
+.text-secondary {
+  color: #273b43;
+}
+
+/* Background Color Cream */
+/* Fungsi: Digunakan di Background => Landing Page*/
+.bg-brand-cream {
+  background-color: #fefbe9;
+}
+
+/* Text Hover */
+/* Fungsi: Ketika Hover akan Berwarna Primary Orange dan Text Underlinex */
+
+.text-hover-primary:hover {
+  color: #ff6b35;
+  text-decoration: underline;
+}
+@layer components {
+  .bg-linear-to-b {
+    background-image: linear-gradient(
+      180deg,
+      rgba(255, 107, 53, 0.1) 0%,
+      rgba(255, 107, 53, 0.06) 28%,
+      rgba(255, 107, 53, 0.02) 56%,
+      transparent 100%
+    );
+    background-repeat: no-repeat;
+    background-position: top center;
+  }
+
+  .bg-linear-to-b-strong {
+    background-image: linear-gradient(
+      180deg,
+      rgba(255, 107, 53, 0.14) 0%,
+      rgba(255, 107, 53, 0.09) 28%,
+      rgba(255, 107, 53, 0.03) 60%,
+      transparent 100%
+    );
+    background-repeat: no-repeat;
+    background-position: top center;
+  }
+
+  .bg-linear-to-br-card {
+    background-image: linear-gradient(
+      135deg,
+      rgba(255, 107, 53, 0.1) 0%,
+      rgba(255, 107, 53, 0.05) 30%,
+      transparent 100%
+    );
+    background-repeat: no-repeat;
+    background-position: top right;
+  }
+
+  .bg-linear-to-br-strong {
+    background-image: radial-gradient(
+      circle at 30% 35%,
+      rgba(255, 107, 53, 0.95) 0%,
+      rgba(255, 107, 53, 0.55) 30%,
+      rgba(39, 59, 67, 0.95) 100%
+    );
+    background-repeat: no-repeat;
+  }
+}

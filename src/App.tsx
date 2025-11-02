@@ -1,5 +1,5 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-import "./index.css";
+import "./global.css";
 import { Landing } from "./pages";
 
 const AppRoutes: React.FC = () => {
