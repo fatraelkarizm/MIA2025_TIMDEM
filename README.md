@@ -1,3 +1,9 @@
+# 🌟 rasaLokal - Tutorial Install
+1. git clone https://github.com/fatraelkarizm/MIA-2025-FE.git
+2. cd MIA-2025-FE
+3. npm install
+4. npm run dev (jalankan)
+
 # 🌟 rasaLokal - Fitur Utama
 
 ## 🏠 **Homepage (Beranda)**
