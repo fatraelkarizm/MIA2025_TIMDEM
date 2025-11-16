@@ -4,9 +4,14 @@ import { getAllCategories } from '@/data/UMKMData';
 interface CategorySidebarProps {
   selectedCategory?: string;
   onCategorySelect?: (category: string) => void;
+  onClose?: () => void; 
 }
 
-export default function CategorySidebar({ selectedCategory = 'Semua', onCategorySelect }: CategorySidebarProps) {
+export default function CategorySidebar({ 
+  selectedCategory = 'Semua', 
+  onCategorySelect,
+  onClose 
+}: CategorySidebarProps) {
   // Get categories from real UMKM data
   const realCategories = getAllCategories();
   
@@ -45,6 +50,21 @@ export default function CategorySidebar({ selectedCategory = 'Semua', onCategory
 
   return (
     <aside className="fixed left-0 top-0 w-60 h-screen bg-[#FFF8F3] border-r border-gray-200 shadow-sm overflow-y-auto pt-6 px-4 pb-8 z-10">
+      {/* Mobile close button - Only show when onClose is provided */}
+      {onClose && (
+        <div className="lg:hidden flex justify-between items-center p-2 mb-4 -mt-2">
+          <h2 className="text-[#114B5F] font-bold text-lg">Kategori</h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
+
       {/* Logo */}
       <div className="mb-8 text-center">
         <Link to="/" className="text-2xl font-bold italic">

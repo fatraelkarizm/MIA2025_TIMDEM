@@ -1,20 +1,98 @@
 import UMKMCard from "@/components/UMKMCard";
+import DetailCard from "@/components/DetailCard";
 import Navbar from "@/components/Navbar";
-import { useState } from "react";
-import { umkmData, getAllCategories, getUMKMByCategory } from "@/data/UMKMData";
+import { useState, useMemo } from "react";
+import {
+  umkmData,
+  getAllCategories,
+  getUMKMByCategory,
+  searchUMKM,
+} from "@/data/UMKMData";
 
 export default function Jelajahi() {
   const [selectedCategory, setSelectedCategory] = useState("Semua Kategori");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState("Jawa Barat");
+  const [selectedUMKM, setSelectedUMKM] = useState(null);
+  const [showAllInCategory, setShowAllInCategory] = useState<
+    Record<string, boolean>
+  >({});
 
   // Get categories from real data
   const categories = getAllCategories();
+
+  // Enhanced category data with counts
   const categoryData = [
     { name: "Kuliner", description: "Temukan kuliner terbaik disekitar anda" },
     { name: "Jasa", description: "Temukan Jasa Terbaik Disekitar anda" },
     { name: "Hiburan", description: "Temukan hiburan terbaik disekitar anda" },
   ];
 
-  // Filter data berdasarkan kategori
+  // Filter UMKM based on search and filters
+  const filteredUMKM = useMemo(() => {
+    let filtered = umkmData;
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      filtered = searchUMKM(searchQuery);
+    }
+
+    // Apply category filter
+    if (selectedCategory !== "Semua Kategori") {
+      filtered = filtered.filter((umkm) => umkm.category === selectedCategory);
+    }
+
+    // Apply province filter (simplified - checking if location contains province)
+    if (selectedProvince) {
+      const provinceMapping: Record<string, string[]> = {
+        "Jawa Barat": [
+          "Bandung",
+          "Telkom University",
+          "Sukabirus",
+          "Dayeuhkolot",
+        ],
+        "DKI Jakarta": ["Jakarta"],
+        "Jawa Tengah": ["Semarang", "Solo"],
+        "Jawa Timur": ["Surabaya", "Malang"],
+      };
+
+      const allowedLocations = provinceMapping[selectedProvince] || [];
+      if (allowedLocations.length > 0) {
+        filtered = filtered.filter((umkm) =>
+          allowedLocations.some((location) =>
+            umkm.location.toLowerCase().includes(location.toLowerCase())
+          )
+        );
+      }
+    }
+
+    return filtered;
+  }, [searchQuery, selectedCategory, selectedProvince]);
+
+  // Handle UMKM click
+  const handleUMKMClick = (umkm: any) => {
+    setSelectedUMKM(umkm);
+  };
+
+  // Close detail modal
+  const handleCloseDetail = () => {
+    setSelectedUMKM(null);
+  };
+
+  // Toggle show all for category
+  const handleShowAllCategory = (categoryName: string) => {
+    setShowAllInCategory((prev: Record<string, boolean>) => ({
+      ...prev,
+      [categoryName]: !prev[categoryName],
+    }));
+  };
+
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("Semua Kategori");
+    setSelectedProvince("Jawa Barat");
+  };
 
   return (
     <>
@@ -32,17 +110,17 @@ export default function Jelajahi() {
             <div className="flex items-center justify-between">
               {/* Left Content */}
               <div className="flex-1 pr-8">
-                <h1 className="text-5xl font-extrabold mb-4 leading-tight">
+                <h1 className="text-3xl lg:text-5xl font-extrabold mb-4 leading-tight">
                   <span className="text-white">Ayo </span>
                   <span className="text-[#FF6B35]">Dukung UMKM</span>
                   <span className="text-white"> Minggu Ini!</span>
                 </h1>
-                <p className="text-white text-base font-light max-w-lg leading-relaxed mb-6">
+                <p className="text-white text-sm lg:text-base font-light max-w-lg leading-relaxed mb-6">
                   Temukan berbagai UMKM lokal dari seluruh Indonesia. Gunakan
                   pencarian dan filter untuk menemukan usaha yang Anda cari.
                 </p>
-                <div className="inline-flex px-6 py-2.5 bg-[#2E687B] rounded-full">
-                  <span className="text-white text-sm font-semibold">
+                <div className="inline-flex px-4 lg:px-6 py-2.5 bg-[#2E687B] rounded-full">
+                  <span className="text-white text-xs lg:text-sm font-semibold">
                     Total {umkmData.length} UMKM Terdaftar
                   </span>
                 </div>
@@ -51,7 +129,7 @@ export default function Jelajahi() {
               {/* Right Image */}
               <div className="hidden lg:block">
                 <img
-                  src="https://api.builder.io/api/v1/image/assets/TEMP/8f54e03e49637716aa47b29ac416c1557305bf9f?width=846"
+                  src="src/assets/DummyImage.png"
                   alt="UMKM"
                   className="w-[380px] h-[200px] rounded-2xl object-cover"
                 />
@@ -61,14 +139,14 @@ export default function Jelajahi() {
         </div>
 
         {/* Search and Filter Section - Overlapping */}
-        <div className="max-w-7xl mx-auto px-8 -mt-16 relative z-10">
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 -mt-16 relative z-10">
+          <div className="bg-white rounded-2xl shadow-xl p-6 lg:p-8 mb-12">
             {/* Search Bar */}
             <div className="mb-8">
-              <div className="flex items-center gap-4 w-full max-w-4xl mx-auto px-6 py-4 bg-[#F8F9FA] border border-gray-200 rounded-full">
+              <div className="flex items-center gap-4 w-full max-w-6xl mx-auto px-4 lg:px-6 py-4 bg-[#F8F9FA] border border-gray-200 rounded-full">
                 <svg
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -82,13 +160,35 @@ export default function Jelajahi() {
                 <input
                   type="text"
                   placeholder="Cari nama UMKM atau produk"
-                  className="flex-1 text-lg text-gray-600 bg-transparent outline-none placeholder:text-gray-400"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 text-base lg:text-lg text-gray-600 bg-transparent outline-none placeholder:text-gray-400"
                 />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
 
             {/* Filters */}
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
               {/* Filter Kategori UMKM */}
               <div className="space-y-2">
                 <label className="text-[#114B5F] text-sm font-semibold block">
@@ -109,14 +209,16 @@ export default function Jelajahi() {
                         fill="#9CA3AF"
                       />
                     </svg>
-                    <select 
+                    <select
                       className="flex-1 bg-transparent text-gray-600 outline-none appearance-none cursor-pointer"
                       value={selectedCategory}
                       onChange={(e) => setSelectedCategory(e.target.value)}
                     >
                       <option>Semua Kategori</option>
-                      {categories.map(category => (
-                        <option key={category} value={category}>{category}</option>
+                      {categories.map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
                       ))}
                     </select>
                     <svg
@@ -127,10 +229,7 @@ export default function Jelajahi() {
                       xmlns="http://www.w3.org/2000/svg"
                       className="shrink-0"
                     >
-                      <path
-                        d="M7 10L12 15L17 10H7Z"
-                        fill="#9CA3AF"
-                      />
+                      <path d="M7 10L12 15L17 10H7Z" fill="#9CA3AF" />
                     </svg>
                   </div>
                 </div>
@@ -156,11 +255,15 @@ export default function Jelajahi() {
                         fill="#9CA3AF"
                       />
                     </svg>
-                    <select className="flex-1 bg-transparent text-gray-600 outline-none appearance-none cursor-pointer">
-                      <option>Jawa Barat</option>
-                      <option>DKI Jakarta</option>
-                      <option>Jawa Tengah</option>
-                      <option>Jawa Timur</option>
+                    <select
+                      className="flex-1 bg-transparent text-gray-600 outline-none appearance-none cursor-pointer"
+                      value={selectedProvince}
+                      onChange={(e) => setSelectedProvince(e.target.value)}
+                    >
+                      <option value="Jawa Barat">Jawa Barat</option>
+                      <option value="DKI Jakarta">DKI Jakarta</option>
+                      <option value="Jawa Tengah">Jawa Tengah</option>
+                      <option value="Jawa Timur">Jawa Timur</option>
                     </select>
                     <svg
                       width="16"
@@ -170,48 +273,147 @@ export default function Jelajahi() {
                       xmlns="http://www.w3.org/2000/svg"
                       className="shrink-0"
                     >
-                      <path
-                        d="M7 10L12 15L17 10H7Z"
-                        fill="#9CA3AF"
-                      />
+                      <path d="M7 10L12 15L17 10H7Z" fill="#9CA3AF" />
                     </svg>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Filter Summary & Clear Button */}
+            {(searchQuery || selectedCategory !== "Semua Kategori") && (
+              <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                <p className="text-blue-800 text-sm">
+                  Menampilkan{" "}
+                  <span className="font-bold">{filteredUMKM.length}</span> hasil
+                  {searchQuery && ` untuk "${searchQuery}"`}
+                  {selectedCategory !== "Semua Kategori" &&
+                    ` dalam kategori ${selectedCategory}`}
+                </p>
+                <button
+                  onClick={clearFilters}
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                  Reset Filter
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Categories Section */}
-          {categoryData.map((category) => {
-            const categoryUMKM = getUMKMByCategory(category.name);
-            if (categoryUMKM.length === 0) return null;
-
-            return (
-              <div key={category.name} className="mb-16">
-                <div className="flex items-center justify-between mb-8">
-                  <div>
-                    <h2 className="text-4xl font-bold text-[#114B5F] mb-2">
-                      {category.name}
-                    </h2>
-                    <p className="text-gray-600 text-base">
-                      {category.description}
-                    </p>
-                  </div>
-                  <button className="px-8 py-3 border-2 border-[#114B5F] text-[#114B5F] hover:bg-[#114B5F] hover:text-white transition-colors font-bold rounded-full text-sm">
-                    Lihat Semua
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {categoryUMKM.slice(0, 4).map((umkm) => (
-                    <UMKMCard key={umkm.id} {...umkm} />
-                  ))}
+          {/* Conditional Rendering: Search Results or Category Sections */}
+          {searchQuery || selectedCategory !== "Semua Kategori" ? (
+            /* Search Results Section */
+            <div className="mb-16">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h2 className="text-3xl lg:text-4xl font-bold text-[#114B5F] mb-2">
+                    {searchQuery
+                      ? "Hasil Pencarian"
+                      : `UMKM ${selectedCategory}`}
+                  </h2>
+                  <p className="text-gray-600 text-base">
+                    {filteredUMKM.length} UMKM ditemukan
+                  </p>
                 </div>
               </div>
-            );
-          })}
+
+              {filteredUMKM.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {filteredUMKM.map((umkm) => (
+                    <div key={umkm.id} onClick={() => handleUMKMClick(umkm)}>
+                      <UMKMCard {...umkm} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-16">
+                  <div className="text-gray-400 mb-4">
+                    <svg
+                      className="w-16 h-16 mx-auto"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl text-gray-600 mb-2">
+                    Tidak Ada Hasil
+                  </h3>
+                  <p className="text-gray-500 mb-4">
+                    {searchQuery
+                      ? `Tidak ditemukan UMKM untuk "${searchQuery}"`
+                      : `Tidak ada UMKM dalam kategori ${selectedCategory}`}
+                  </p>
+                  <button
+                    onClick={clearFilters}
+                    className="px-6 py-3 bg-[#FF6B35] text-white rounded-full hover:bg-[#ff8555] transition-colors font-semibold"
+                  >
+                    Reset Pencarian
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Categories Section */
+            categoryData.map((category) => {
+              const categoryUMKM = getUMKMByCategory(category.name);
+              if (categoryUMKM.length === 0) return null;
+
+              const showAll = showAllInCategory[category.name];
+              const displayUMKM = showAll
+                ? categoryUMKM
+                : categoryUMKM.slice(0, 4);
+
+              return (
+                <div key={category.name} className="mb-16">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-4">
+                    <div>
+                      <h2 className="text-3xl lg:text-4xl font-bold text-[#114B5F] mb-2">
+                        {category.name}
+                      </h2>
+                      <p className="text-gray-600 text-base">
+                        {category.description} ({categoryUMKM.length} UMKM
+                        tersedia)
+                      </p>
+                    </div>
+                    {categoryUMKM.length > 4 && (
+                      <button
+                        onClick={() => handleShowAllCategory(category.name)}
+                        className="px-6 lg:px-8 py-3 border-2 border-[#114B5F] text-[#114B5F] hover:bg-[#114B5F] hover:text-white transition-colors font-bold rounded-full text-sm self-start lg:self-auto"
+                      >
+                        {showAll
+                          ? "Tampilkan Sedikit"
+                          : `Lihat Semua (${categoryUMKM.length})`}
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {displayUMKM.map((umkm) => (
+                      <div key={umkm.id} onClick={() => handleUMKMClick(umkm)}>
+                        <UMKMCard {...umkm} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
+
+      {/* Detail Modal */}
+      {selectedUMKM && (
+        <div className="fixed inset-0 z-50">
+          <DetailCard umkm={selectedUMKM} onClose={handleCloseDetail} />
+        </div>
+      )}
     </>
   );
 }

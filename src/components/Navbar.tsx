@@ -51,7 +51,8 @@ const Navbar = ({ activeSection = "hero", onSectionClick }: NavbarProps) => {
   return (
     <nav className="w-full max-w-7xl mx-auto flex items-center justify-between">
       <h1 className="text-white text-2xl lg:text-[32px] font-bold">
-        Direktori UMKM
+        <span className="text-white">rasa</span>
+        <span className="text-[#FF6B35]">Lokal</span>
       </h1>
 
       <div className="hidden lg:flex items-center gap-6 xl:gap-10">

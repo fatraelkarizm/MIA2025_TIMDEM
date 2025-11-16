@@ -5,7 +5,7 @@ export function HeroCarousel() {
   
   const slides = [
     {
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/1a0dfa1cf69983d06a675f28cb07b72390afda94?width=2168",
+      image: "src/assets/DummyImage.png",
       title: "Warung Nasi Bu Siti",
       subtitle: '"Nasi Goreng Cita Rasa yang Khas!"'
     }

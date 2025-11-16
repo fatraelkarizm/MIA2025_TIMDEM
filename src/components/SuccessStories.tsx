@@ -15,7 +15,7 @@ export default function SuccessStories() {
         <div className="lg:w-1/2">
           <div className="relative rounded-2xl overflow-hidden shadow-md h-[350px]">
             <img
-              src="https://api.builder.io/api/v1/image/assets/TEMP/8b0c57e17952f18d6720ec5d1b7ae8ea7022ac96?width=978"
+              src="src/assets/DummyImage.png"
               alt="Warung Nasi Bu Siti"
               className="w-full h-full object-cover"
             />
