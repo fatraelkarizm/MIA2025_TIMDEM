@@ -1,6 +1,6 @@
 # 🌟 rasaLokal - Tutorial Install
-1. git clone https://github.com/fatraelkarizm/MIA-2025-FE.git
-2. cd MIA-2025-FE
+1. git clone https://github.com/fatraelkarizm/MIA2025_TIMDEM.git
+2. cd MIA2025_TIMDEM
 3. npm install
 4. npm run dev (jalankan)
 
