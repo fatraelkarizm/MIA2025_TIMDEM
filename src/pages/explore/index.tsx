@@ -1,279 +1,217 @@
-import React, { useState } from "react";
-import { Search, Filter, MapPin, Home, Map, ShoppingBag, User } from "lucide-react";
+import UMKMCard from "@/components/UMKMCard";
 import Navbar from "@/components/Navbar";
-import Carousel from "@/components/Carousel";
-import { ReactLogo } from "@/assets";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { umkmData, getAllCategories, getUMKMByCategory } from "@/data/UMKMData";
 
-const CAROUSEL = [
-  {
-    image: ReactLogo,
-    alt: "React Logo",
-    title: "Promosi UMKM Modern",
-    desc: "Raih pelanggan baru lewat platform digital, temukan usaha lokal terbaik di seluruh Indonesia."
-  },
-  {
-    image: ReactLogo,
-    alt: "React Logo",
-    title: "Jelajahi Bisnis Lokal",
-    desc: "Dapatkan inspirasi, review jujur, dan info lengkap UMKM terbaik di sekitar Anda."
-  },
-  {
-    image: ReactLogo,
-    alt: "React Logo",
-    title: "Gabung Komunitas UMKM",
-    desc: "Bergabung dengan ribuan pelaku usaha dan pelanggan. Dukung ekonomi kreatif lokal!"
-  }
-];
+export default function Jelajahi() {
+  const [selectedCategory, setSelectedCategory] = useState("Semua Kategori");
 
-const Explore = () => {
-  const [search, setSearch] = useState("");
-  const [kategori, setKategori] = useState("Semua Kategori");
-  const [provinsi, setProvinsi] = useState("Semua Provinsi");
+  // Get categories from real data
+  const categories = getAllCategories();
+  const categoryData = [
+    { name: "Kuliner", description: "Temukan kuliner terbaik disekitar anda" },
+    { name: "Jasa", description: "Temukan Jasa Terbaik Disekitar anda" },
+    { name: "Hiburan", description: "Temukan hiburan terbaik disekitar anda" },
+  ];
+
+  // Filter data berdasarkan kategori
 
   return (
-    <div className="min-h-screen bg-[#FFF8F3] font-['Inter']">
-      {/* Navbar */}
-      <header className="bg-secondary h-[90px] flex items-center">
-        <Navbar />
-      </header>
+    <>
+      <div className="min-h-screen bg-[#FFF8F3]">
+        {/* Header dengan shadow - max-w-7xl */}
+        <header className="bg-[#114B5F] h-[90px] flex items-center shadow-lg relative z-10">
+          <div className="max-w-7xl mx-auto px-8 w-full">
+            <Navbar />
+          </div>
+        </header>
 
-      {/* Carousel FULL WIDTH, boxed, with border & shadow */}
-      <section className="max-w-7xl mx-auto px-4 pt-8 pb-0">
-        <div className="w-full flex flex-col items-center">
-          <div
-            className="w-full rounded-[28px] border border-[#222] shadow-md p-3 md:p-5"
-            style={{ background: "#FFF8F3" }}
-          >
-            <div className="rounded-2xl overflow-hidden bg-[#292d32] p-0">
-              <Carousel
-                baseWidth={1100}
-                autoplay={true}
-                autoplayDelay={3000}
-                pauseOnHover={true}
-                loop={true}
-                round={false}
-                items={CAROUSEL.map((item) => ({
-                  ...item,
-                  icon: null
-                }))}
-              />
+        {/* Hero Section dengan background dan layout yang sesuai */}
+        <div className="bg-[#114B5F] pt-16 pb-32 relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-8 relative">
+            <div className="flex items-center justify-between">
+              {/* Left Content */}
+              <div className="flex-1 pr-8">
+                <h1 className="text-5xl font-extrabold mb-4 leading-tight">
+                  <span className="text-white">Ayo </span>
+                  <span className="text-[#FF6B35]">Dukung UMKM</span>
+                  <span className="text-white"> Minggu Ini!</span>
+                </h1>
+                <p className="text-white text-base font-light max-w-lg leading-relaxed mb-6">
+                  Temukan berbagai UMKM lokal dari seluruh Indonesia. Gunakan
+                  pencarian dan filter untuk menemukan usaha yang Anda cari.
+                </p>
+                <div className="inline-flex px-6 py-2.5 bg-[#2E687B] rounded-full">
+                  <span className="text-white text-sm font-semibold">
+                    Total {umkmData.length} UMKM Terdaftar
+                  </span>
+                </div>
+              </div>
+
+              {/* Right Image */}
+              <div className="hidden lg:block">
+                <img
+                  src="https://api.builder.io/api/v1/image/assets/TEMP/8f54e03e49637716aa47b29ac416c1557305bf9f?width=846"
+                  alt="UMKM"
+                  className="w-[380px] h-[200px] rounded-2xl object-cover"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Search bar BELOW carousel, proporsional desktop & mobile */}
-      <section className="w-full flex justify-center z-20 relative">
-        <form
-          className="
-            w-full max-w-7xl bg-white
-            rounded-2xl shadow-lg border border-gray-100
-            flex flex-col md:flex-row items-stretch md:items-center px-5 sm:px-7 md:px-8 py-4 gap-3 md:gap-4 mt-7
-          "
-          style={{ fontSize: '1.03rem' }}
-        >
-          <div className="flex-1 flex items-center gap-2 bg-transparent">
-            <Search className="w-6 h-6 text-slate-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Cari UMKM atau produk"
-              className="flex-1 bg-transparent outline-none text-slate-700 text-base placeholder:text-slate-400 py-1"
-              style={{ fontSize: '1.05rem' }}
-            />
-          </div>
-          {/* Mobile ONLY: kategori/provinsi */}
-          <div className="flex flex-col sm:flex-row gap-2 md:hidden">
-            <select
-              value={kategori}
-              onChange={e => setKategori(e.target.value)}
-              className="rounded-full border border-gray-200 px-4 py-2 text-base"
-            >
-              <option>Semua Kategori</option>
-              <option>Kuliner</option>
-              <option>Kerajinan</option>
-            </select>
-            <select
-              value={provinsi}
-              onChange={e => setProvinsi(e.target.value)}
-              className="rounded-full border border-gray-200 px-4 py-2 text-base"
-            >
-              <option>Semua Provinsi</option>
-              <option>DKI Jakarta</option>
-              <option>Jawa Barat</option>
-              {/* Add more options as needed */}
-            </select>
-          </div>
-          <button
-            type="submit"
-            className="bg-primary text-white px-7 py-2.5 rounded-full text-base font-semibold hover:opacity-95 transition md:ml-3"
-            style={{ fontSize: '1.05rem', minWidth: "90px" }}
-          >
-            Cari
-          </button>
-        </form>
-      </section>
+        {/* Search and Filter Section - Overlapping */}
+        <div className="max-w-7xl mx-auto px-8 -mt-16 relative z-10">
+          <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
+            {/* Search Bar */}
+            <div className="mb-8">
+              <div className="flex items-center gap-4 w-full max-w-4xl mx-auto px-6 py-4 bg-[#F8F9FA] border border-gray-200 rounded-full">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="shrink-0"
+                >
+                  <path
+                    d="M21 19L16.514 14.515C17.4818 13.3393 18.0207 11.8956 18.0207 10.4103C18.0207 6.61238 14.908 3.5 11.1103 3.5C7.31256 3.5 4.2 6.61238 4.2 10.4103C4.2 14.2081 7.31256 17.3205 11.1103 17.3205C12.5956 17.3205 14.0393 16.7816 15.215 15.8138L19.7 20.299L21 19ZM5.91034 10.4103C5.91034 7.58396 8.28398 5.21034 11.1103 5.21034C13.9367 5.21034 16.3103 7.58396 16.3103 10.4103C16.3103 13.2367 13.9367 15.6103 11.1103 15.6103C8.28398 15.6103 5.91034 13.2367 5.91034 10.4103Z"
+                    fill="#9CA3AF"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Cari nama UMKM atau produk"
+                  className="flex-1 text-lg text-gray-600 bg-transparent outline-none placeholder:text-gray-400"
+                />
+              </div>
+            </div>
 
-      {/* Main Content: Sidebar filter + Grid */}
-      <main className="max-w-7xl mx-auto px-4 lg:px-8 py-12 flex flex-col lg:flex-row gap-10">
-        {/* Sidebar Filter */}
-        <aside className="hidden lg:block w-[300px] flex-shrink-0">
-          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-md sticky top-[110px]">
-            <h4 className="text-base font-semibold text-brand-teal mb-4">Filter</h4>
-            <div className="space-y-5">
-              <div>
-                <label className="text-xs text-slate-600 block mb-1">Kategori</label>
-                <select className="w-full rounded-md border border-gray-200 px-3 py-2 text-base">
-                  <option>Semua Kategori</option>
-                  <option>Kuliner</option>
-                  <option>Kerajinan</option>
-                </select>
+            {/* Filters */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Filter Kategori UMKM */}
+              <div className="space-y-2">
+                <label className="text-[#114B5F] text-sm font-semibold block">
+                  Kategori UMKM
+                </label>
+                <div className="relative">
+                  <div className="flex items-center gap-3 px-4 py-3.5 border border-gray-200 rounded-xl bg-white hover:border-[#114B5F] transition-colors">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="shrink-0"
+                    >
+                      <path
+                        d="M4 6H6V8H4V6ZM4 11H6V13H4V11ZM4 16H6V18H4V16ZM8.5 6V8H21V6H8.5ZM8.5 11V13H21V11H8.5ZM8.5 16V18H21V16H8.5Z"
+                        fill="#9CA3AF"
+                      />
+                    </svg>
+                    <select 
+                      className="flex-1 bg-transparent text-gray-600 outline-none appearance-none cursor-pointer"
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                    >
+                      <option>Semua Kategori</option>
+                      {categories.map(category => (
+                        <option key={category} value={category}>{category}</option>
+                      ))}
+                    </select>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="shrink-0"
+                    >
+                      <path
+                        d="M7 10L12 15L17 10H7Z"
+                        fill="#9CA3AF"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="text-xs text-slate-600 block mb-1">Provinsi</label>
-                <select className="w-full rounded-md border border-gray-200 px-3 py-2 text-base">
-                  <option>Semua Provinsi</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-xs text-slate-600 block mb-1">Rating</label>
-                <div className="flex gap-2">
-                  <button className="px-3 py-2 rounded-md border border-gray-200 text-base">4+</button>
-                  <button className="px-3 py-2 rounded-md border border-gray-200 text-base">3+</button>
+
+              {/* Filter Provinsi */}
+              <div className="space-y-2">
+                <label className="text-[#114B5F] text-sm font-semibold block">
+                  Provinsi
+                </label>
+                <div className="relative">
+                  <div className="flex items-center gap-3 px-4 py-3.5 border border-gray-200 rounded-xl bg-white hover:border-[#114B5F] transition-colors">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="shrink-0"
+                    >
+                      <path
+                        d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22S19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9S10.62 6.5 12 6.5S14.5 7.62 14.5 9S13.38 11.5 12 11.5Z"
+                        fill="#9CA3AF"
+                      />
+                    </svg>
+                    <select className="flex-1 bg-transparent text-gray-600 outline-none appearance-none cursor-pointer">
+                      <option>Jawa Barat</option>
+                      <option>DKI Jakarta</option>
+                      <option>Jawa Tengah</option>
+                      <option>Jawa Timur</option>
+                    </select>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="shrink-0"
+                    >
+                      <path
+                        d="M7 10L12 15L17 10H7Z"
+                        fill="#9CA3AF"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </aside>
-        {/* Grid Products */}
-        <section className="flex-1">
-          <CategorySection
-            title="Kuliner"
-            subtitle="Temukan kuliner terbaik di sekitar anda"
-            items={[
-              {
-                image: "https://api.builder.io/api/v1/image/assets/TEMP/6fee999711d9251a41e1f8b1471699515c5b94c0?width=800",
-                category: "Kuliner",
-                title: "Warung Nasi Bu Siti",
-                description: "Nasi goreng spesial dengan bumbu rahasia dan pilihan topping beragam yang selalu segar setiap hari.",
-                location: "Jl. Cihampelas No. 12, Kota Bandung",
-              },
-              {
-                image: "https://api.builder.io/api/v1/image/assets/TEMP/6a8809b6442ca845bd8b2caccde0b15f60e54a61?width=800",
-                category: "Kuliner",
-                title: "Warung Mie Pak Joko",
-                description: "Mie ayam dengan kuah kaldu tulang yang gurih dan pangsit homemade.",
-                location: "Jl. Braga No. 5, Kota Bandung",
-              },
-              {
-                image: "https://api.builder.io/api/v1/image/assets/TEMP/6a8809b6442ca845bd8b2caccde0b15f60e54a61?width=800",
-                category: "Kuliner",
-                title: "Kedai Kopi Lokal",
-                description: "Kopi single origin dari petani lokal dengan signature roast.",
-                location: "Jl. Asia Afrika No. 7, Kota Bandung",
-              },
-              {
-                image: "https://api.builder.io/api/v1/image/assets/TEMP/375ff899df9e4d0e00b48d69004b3a404b69b13c?width=800",
-                category: "Kuliner",
-                title: "Sate Ayam Pak Kumis",
-                description: "Sate ayam dengan bumbu kacang spesial yang legendaris.",
-                location: "Jl. Veteran No. 1, Kota Bandung",
-              },
-            ]}
-          />
 
-          <CategorySection
-            title="Kerajinan Tangan"
-            subtitle="Temukan kerajinan tangan unik di sekitar"
-            items={[
-              {
-                image: "https://api.builder.io/api/v1/image/assets/TEMP/3f825667aaac016df7dd6b50b0d7d6e636e41f34?width=800",
-                category: "Kerajinan Tangan",
-                title: "Kerajinan Bambu Jaya",
-                description: "Mengolah bambu menjadi karya seni, yang bisa dijadikan sebagai hiasan rumah, kantor.",
-                location: "Jl. Sukabumi No. 12, Kota Yogyakarta",
-              },
-              {
-                image: "https://api.builder.io/api/v1/image/assets/TEMP/375ff899df9e4d0e00b48d69004b3a404b69b13c?width=800",
-                category: "Kerajinan Tangan",
-                title: "Anyaman Lombok",
-                description: "Anyaman tradisional Lombok, cocok untuk hadiah dan dekorasi rumah.",
-                location: "Jl. Malioboro No. 10, Kota Yogyakarta",
-              },
-            ]}
-          />
-        </section>
-      </main>
+          {/* Categories Section */}
+          {categoryData.map((category) => {
+            const categoryUMKM = getUMKMByCategory(category.name);
+            if (categoryUMKM.length === 0) return null;
 
-      {/* Bottom nav mobile only */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg lg:hidden">
-        <div className="flex items-center justify-around px-7 py-2 max-w-md mx-auto">
-          <Link to="/" className="flex flex-col items-center gap-1 py-2">
-            <Home className="w-5 h-5 text-slate-500" />
-            <span className="text-xs text-slate-500">Beranda</span>
-          </Link>
-          <button className="flex flex-col items-center gap-1 py-2">
-            <Map className="w-6 h-6 text-slate-500" />
-            <span className="text-xs text-slate-500">Peta</span>
-          </button>
-          <button className="flex flex-col items-center gap-1 py-2">
-            <ShoppingBag className="w-5 h-5 text-slate-500" />
-            <span className="text-xs text-slate-500">Jelajahi</span>
-          </button>
-          <button className="flex flex-col items-center gap-1 py-2">
-            <User className="w-5 h-5 text-slate-500" />
-            <span className="text-xs text-slate-500">Profil</span>
-          </button>
+            return (
+              <div key={category.name} className="mb-16">
+                <div className="flex items-center justify-between mb-8">
+                  <div>
+                    <h2 className="text-4xl font-bold text-[#114B5F] mb-2">
+                      {category.name}
+                    </h2>
+                    <p className="text-gray-600 text-base">
+                      {category.description}
+                    </p>
+                  </div>
+                  <button className="px-8 py-3 border-2 border-[#114B5F] text-[#114B5F] hover:bg-[#114B5F] hover:text-white transition-colors font-bold rounded-full text-sm">
+                    Lihat Semua
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {categoryUMKM.slice(0, 4).map((umkm) => (
+                    <UMKMCard key={umkm.id} {...umkm} />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </nav>
-    </div>
-  );
-};
-
-function CategorySection({ title, subtitle, items }) {
-  return (
-    <section className="mb-12">
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h3 className="text-brand-teal text-xl lg:text-2xl font-extrabold">{title}</h3>
-          {subtitle && <p className="text-gray-700 text-sm">{subtitle}</p>}
-        </div>
-        <button className="px-5 py-2 border border-brand-teal rounded-full text-brand-teal text-sm font-bold hidden lg:inline-flex">Lihat Semua</button>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {items.map((it) => (
-          <BusinessCard key={it.title} {...it} />
-        ))}
-      </div>
-    </section>
+    </>
   );
 }
-
-function BusinessCard({ image, category, title, description, location }) {
-  return (
-    <article className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-      <div className="relative h-[220px] lg:h-[180px]">
-        <img src={image} alt={title} className="w-full h-full object-cover" />
-        <span className="absolute top-4 left-4 bg-brand-orange text-white text-xs font-bold px-3 py-1 rounded-full">{category}</span>
-      </div>
-      <div className="p-5 lg:p-4">
-        <h4 className="text-brand-teal text-lg font-bold mb-2">{title}</h4>
-        <p className="text-gray-600 text-sm leading-relaxed mb-3">{description}</p>
-        <div className="flex items-start gap-2 mb-4">
-          <MapPin className="w-4 h-4 text-gray-500 mt-1 shrink-0" />
-          <span className="text-gray-500 text-sm leading-tight">{location}</span>
-        </div>
-        <div className="flex gap-3">
-          <button className="flex-1 bg-brand-orange text-white text-sm font-semibold py-3 rounded-full hover:bg-[#e55f2f] transition-colors">Dukung UMKM Ini Sekarang →</button>
-          <button className="w-12 lg:w-12 h-12 rounded-full border border-brand-teal text-brand-teal hover:bg-brand-teal/10 transition-colors flex items-center justify-center">
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
-          </button>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-export default Explore;

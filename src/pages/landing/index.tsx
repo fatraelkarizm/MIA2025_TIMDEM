@@ -1,35 +1,98 @@
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 
 const Landing = () => {
+  const [activeSection, setActiveSection] = useState("hero");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+
+      // Detect berdasarkan element
+      const featuresSection = document.getElementById("features-section");
+      const howItWorksSection = document.getElementById("how-it-works-section");
+      const ctaSection = document.getElementById("cta-section");
+
+      if (ctaSection) {
+        const rect = ctaSection.getBoundingClientRect();
+        if (rect.top < windowHeight / 2) {
+          setActiveSection("cta");
+          return;
+        }
+      }
+
+      if (howItWorksSection) {
+        const rect = howItWorksSection.getBoundingClientRect();
+        if (rect.top < windowHeight / 2 && rect.bottom > windowHeight / 2) {
+          setActiveSection("how-it-works");
+          return;
+        }
+      }
+
+      if (featuresSection) {
+        const rect = featuresSection.getBoundingClientRect();
+        if (rect.top < windowHeight / 2 && rect.bottom > windowHeight / 2) {
+          setActiveSection("features");
+          return;
+        }
+      }
+
+      setActiveSection("hero");
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Scroll to section function
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      // Offset untuk navbar yang fixed (90px)
+      const offsetTop = element.offsetTop - 90;
+      window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-brand-cream">
-      <header className="bg-secondary h-[90px] flex items-center">
-        <Navbar />
+      {/* Header dengan navbar tetap biru, tapi teks bisa berubah */}
+      <header className="fixed top-0 left-0 right-0 h-[90px] bg-[#114B5F] flex items-center transition-all duration-300 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-8 w-full">
+          <Navbar activeSection={activeSection} onSectionClick={scrollToSection} />
+        </div>
       </header>
 
-      <section className="relative w-full max-w-7xl mx-auto pt-12 lg:pt-24 pb-16 lg:pb-32 overflow-visible">
+      {/* Spacer untuk fixed header */}
+      <div className="h-[90px]"></div>
+
+      <section
+        id="hero-section"
+        className="relative w-full max-w-7xl mx-auto pt-12 lg:pt-24 pb-16 lg:pb-32 overflow-visible"
+      >
         <div className="relative z-10 max-w-[667px] px-6 lg:px-0">
           <div className="inline-flex items-center justify-center px-4 py-2 bg-white rounded-full mb-6 lg:mb-8">
-            <span className="text-brand-teal text-sm font-medium">
+            <span className="text-[#114B5F] text-sm font-medium">
               #DukungUMKMLokal
             </span>
           </div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-[64px] font-extrabold leading-tight mb-4 lg:mb-6">
-            <span className="text-brand-teal">Temukan & Dukung </span>
-            <span className="text-primary">UMKM</span>
+          <h2 className="text-4xl text-[#114B5F]  md:text-5xl lg:text-[64px] font-extrabold leading-tight mb-4 lg:mb-6">
+            Temukan & Dukung <span className="text-primary">UMKM Lokal</span>
           </h2>
-
-          <h3 className="text-primary text-4xl md:text-5xl lg:text-[60px] font-extrabold mb-6 lg:mb-8">
-            Lokal
-          </h3>
 
           <p className="text-[rgba(0,0,0,0.65)] text-base lg:text-lg mb-8 lg:mb-10 max-w-[590px] font-light">
             Platform terpercaya untuk menemukan bisnis kecil di sekitar Anda.
             Dukung ekonomi lokal, bangun komunitas yang lebih kuat.
           </p>
 
-          <button className="bg-primary text-white px-7 lg:px-8 py-3 lg:py-[13px] rounded-full text-base lg:text-lg font-semibold hover:bg-[#e55f2f] transition-colors">
+          <button 
+            onClick={() => scrollToSection("features-section")}
+            className="bg-primary text-white px-7 lg:px-8 py-3 lg:py-[13px] rounded-full text-base lg:text-lg font-semibold hover:bg-[#e55f2f] transition-colors"
+          >
             Jelajahi Sekarang →
           </button>
         </div>
@@ -82,7 +145,10 @@ const Landing = () => {
         </div>
       </section>
 
-      <section className="relative bg-white py-16 lg:py-24 overflow-visible">
+      <section
+        id="features-section"
+        className="relative bg-white py-16 lg:py-24 overflow-visible"
+      >
         <div className="absolute inset-x-0 -top-12 h-64 -z-10 pointer-events-none">
           <div className="h-full w-full bg-linear-to-b-strong"></div>
         </div>
@@ -94,7 +160,7 @@ const Landing = () => {
                 Fitur Unggulan
               </span>
             </div>
-            <h2 className="text-3xl md:text-4xl lg:text-[48px] font-bold text-brand-teal mb-4">
+            <h2 className="text-3xl md:text-4xl lg:text-[48px] font-bold text-[#114B5F] mb-4">
               Kenapa Memilih Kami?
             </h2>
             <p className="text-gray-900 text-base lg:text-lg max-w-[590px] mx-auto font-light">
@@ -103,6 +169,7 @@ const Landing = () => {
             </p>
           </div>
 
+          {/* Cards tetap sama */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 ">
             <div className="bg-linear-to-br-card relative bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
               <div className="absolute inset-0 -z-10 bg-linear-to-br-card pointer-events-none"></div>
@@ -121,7 +188,7 @@ const Landing = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-brand-teal text-xl font-bold mb-3">
+              <h3 className="text-[#114B5F] text-xl font-bold mb-3">
                 Cari dengan Mudah
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -152,7 +219,7 @@ const Landing = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-brand-teal text-xl font-bold mb-3">
+              <h3 className="text-[#114B5F] text-xl font-bold mb-3">
                 Peta Interaktif
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -178,7 +245,7 @@ const Landing = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-brand-teal text-xl font-bold mb-3">
+              <h3 className="text-[#114B5F] text-xl font-bold mb-3">
                 Cerita & Inspirasi
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -204,7 +271,7 @@ const Landing = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-brand-teal text-xl font-bold mb-3">
+              <h3 className="text-[#114B5F] text-xl font-bold mb-3">
                 Dukung Lokal
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -216,7 +283,10 @@ const Landing = () => {
         </div>
       </section>
 
-      <section className=" relative y-16 lg:py-24 bg-linear-to-b-strong bg-white ">
+      <section
+        id="how-it-works-section"
+        className=" relative py-16 lg:py-24 bg-linear-to-b-strong bg-white "
+      >
         <div className="w-full max-w-[1440px] mx-auto px-6 lg:px-[147px] bg-linear-to-b-card ">
           <div className="text-center mb-12 lg:mb-16 bg-linear-to-b-card ">
             <div className="inline-flex items-center justify-center px-4 py-2 bg-brand-cream rounded-full mb-6">
@@ -224,7 +294,7 @@ const Landing = () => {
                 Cara Kerja
               </span>
             </div>
-            <h2 className="text-3xl md:text-4xl lg:text-[48px] font-bold text-brand-teal mb-4">
+            <h2 className="text-3xl md:text-4xl lg:text-[48px] font-bold text-[#114B5F] mb-4">
               Mudah & Cepat
             </h2>
             <p className="text-gray-900 text-base lg:text-lg max-w-[590px] mx-auto font-light">
@@ -272,7 +342,10 @@ const Landing = () => {
         </div>
       </section>
 
-      <section className="relative py-20 lg:py-32 overflow-hidden bg-secondary">
+      <section
+        id="cta-section"
+        className="relative py-20 lg:py-32 overflow-hidden bg-[#114B5F]"
+      >
         <div className="absolute inset-0 opacity-20 pointer-events-none"></div>
 
         <div className="relative z-10 text-center px-6">
@@ -287,10 +360,6 @@ const Landing = () => {
           </button>
         </div>
       </section>
-
-      <footer className="bg-white border-t border-gray-200 py-12 lg:py-16">
-        <div className="w-full max-w-[1440px] mx-auto px-6 lg:px-8"></div>
-      </footer>
     </div>
   );
 };

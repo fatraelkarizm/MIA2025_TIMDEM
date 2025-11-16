@@ -7,23 +7,23 @@ interface NavItem {
 }
 export const NAV_ITEMS: NavItem[] = [
      {
-          label: "Home",
+          label: "Cari UMKM",
           href: "/",
           icon: "home",
      },
      {
-          label: "Explore",
+          label: "Fitur",
           href: "/explore",
           icon: "info-circle",
      },
      {
 
-          label: "Services",
+          label: "Cara Kerja",
           href: "/services",
           icon: "cog",
      },
      {
-          label: "Contact",
+          label: "Kontak",
           href: "/contact",
           icon: "phone",
      }
